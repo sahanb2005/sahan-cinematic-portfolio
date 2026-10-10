@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sahan Bandara - Professional CV</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #e2e8f0;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            margin: 0;
+            padding: 0;
+        }
+        .a4-document {
+            width: 210mm;
+            min-height: 297mm;
+            background: white;
+            margin: 2rem auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        /* Force strict A4 printing rules */
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        @media print {
+            body {
+                background-color: white;
+                margin: 0;
+                padding: 0;
+            }
+            .a4-document {
+                margin: 0 !important;
+                box-shadow: none !important;
+                width: 210mm !important;
+                height: 297mm !important; /* Lock to exactly 1 A4 page height */
+                overflow: hidden !important; /* Prevent spilling to page 2 */
+                display: flex !important;
+                flex-direction: row !important; /* Force side-by-side layout in print */
+            }
+            /* Lock column widths specifically for print */
+            .print-sidebar { width: 33.333333% !important; height: 100vh !important; }
+            .print-main { width: 66.666667% !important; height: 100vh !important; }
+            .no-print { display: none !important; }
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            light: '#e0f2fe',
+                            DEFAULT: '#0284c7', /* Professional Deep Sky Blue */
+                            dark: '#0369a1',
+                        },
+                        dark: '#0f172a'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="text-slate-800">
+
+<!-- Interactive Action Bar (Hidden when printing) -->
+<div class="no-print bg-slate-900 text-white p-4 flex flex-col md:flex-row justify-between items-center sticky top-0 z-50 shadow-lg gap-4">
+    <!-- Back Button -->
+    <a href="index.html" class="flex items-center gap-2 hover:text-brand-light transition-colors font-medium">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+        Back to Portfolio
+    </a>
+
+    <!-- Print Info & Button -->
+    <div class="flex items-center gap-4">
+        <span class="text-sm text-slate-400 hidden md:inline italic">Tip: Check "Background graphics" in print settings.</span>
+        <button onclick="window.print()" class="bg-brand hover:bg-brand-dark px-5 py-2 rounded-full font-medium flex items-center gap-2 transition-colors shadow-lg shadow-brand/20">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+            Print / Save PDF
+        </button>
+    </div>
+</div>
+
+<!-- The CV Document -->
+<div class="a4-document flex flex-col md:flex-row">
+
+    <!-- Left Column: Sidebar -->
+    <div class="print-sidebar w-full md:w-1/3 bg-slate-50 border-r border-slate-200 p-8 flex flex-col gap-8">
+
+        <!-- Profile Image & Header -->
+        <div class="flex flex-col items-center text-center gap-4">
+            <div class="w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-lg bg-slate-200">
+                <img src="sahan-portrait.jpg" alt="Sahan Bandara" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x400/0f172a/ffffff?text=SB'">
+            </div>
+            <div>
+                <h1 class="text-2xl font-bold text-dark tracking-tight">Sahan Bandara</h1>
+                <p class="text-brand-dark font-medium mt-1">Full-Stack Developer</p>
+            </div>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="flex flex-col gap-4">
+            <h2 class="text-sm font-bold text-dark uppercase tracking-wider border-b-2 border-brand w-12 pb-1">Contact</h2>
+            <div class="flex flex-col gap-3 text-sm text-slate-600">
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    <span>sahanb942@gmail.com</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                    <span>076 220 2028</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    <a href="https://github.com/sahanb2005" class="hover:text-brand" target="_blank">github.com/sahanb2005</a>
+                </div>
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    <a href="https://www.linkedin.com/in/sahan-bandara-20b339344" class="hover:text-brand" target="_blank">LinkedIn Profile</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Skills -->
+        <div class="flex flex-col gap-4">
+            <h2 class="text-sm font-bold text-dark uppercase tracking-wider border-b-2 border-brand w-8 pb-1">Skills</h2>
+
+            <div class="mb-2">
+                <h3 class="text-xs font-semibold text-slate-800 mb-2">Frontend</h3>
+                <div class="flex flex-wrap gap-2">
+                    <span class="bg-slate-200 text-slate-700 px-2 py-1 rounded text-xs font-medium">React</span>
+                    <span class="bg-slate-200 text-slate-700 px-2 py-1 rounded text-xs font-medium">Next.js</span>
+                    <span class="bg-slate-200 text-slate-700 px-2 py-1 rounded text-xs font-medium">JavaScript/TS</span>
+                    <span class="bg-slate-200 text-slate-700 px-2 py-1 rounded text-xs font-medium">Tailwind CSS</span>
+                    <span class="bg-slate-200 text-slate-700 px-2 py-1 rounded text-xs font-medium">Bootstrap</span>
+                </div>
+            </div>
+
+            <div class="mb-2">
+                <h3 class="text-xs font-semibold text-slate-800 mb-2">Backend & Database</h3>
+                <div class="flex flex-wrap gap-2">
+                    <span class="bg-slate-200 text-slate-700 px-2 py-1 rounded text-xs font-medium">Node.js</span>
+                    <span class="bg-slate-200 text-slate-700 px-2 py-1 rounded text-xs font-medium">Express.js</span>
+                    <span class="bg-slate-200 text-slate-700 px-2 py-1 rounded text-xs font-medium">Java / Spring Boot</span>
+                    <span class="bg-slate-200 text-slate-700 px-2 py-1 rounded text-xs font-medium">PHP</span>
+                    <span class="bg-slate-200 text-slate-700 px-2 py-1 rounded text-xs font-medium">Python</span>
+                    <span class="bg-slate-200 text-slate-700 px-2 py-1 rounded text-xs font-medium">MySQL</span>
+                    <span class="bg-slate-200 text-slate-700 px-2 py-1 rounded text-xs font-medium">MongoDB</span>
+                    <span class="bg-slate-200 text-slate-700 px-2 py-1 rounded text-xs font-medium">PostgreSQL</span>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xs font-semibold text-slate-800 mb-2">Mobile & Tools</h3>
+                <div class="flex flex-wrap gap-2">
+                    <span class="bg-slate-200 text-slate-700 px-2 py-1 rounded text-xs font-medium">React Native</span>
+                    <span class="bg-slate-200 text-slate-700 px-2 py-1 rounded text-xs font-medium">Flutter</span>
+                    <span class="bg-slate-200 text-slate-700 px-2 py-1 rounded text-xs font-medium">Git / Docker</span>
+                    <span class="bg-slate-200 text-slate-700 px-2 py-1 rounded text-xs font-medium">Figma</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Main Content -->
+    <div class="print-main w-full md:w-2/3 p-10 flex flex-col gap-8 bg-white">
+
+        <!-- Summary -->
+        <section>
+            <h2 class="text-xl font-bold text-dark border-b-2 border-brand pb-2 mb-4 inline-block">Professional Summary</h2>
+            <p class="text-sm text-slate-600 leading-relaxed text-justify">
+                Passionate and detail-oriented Full-Stack Developer with a strong foundation in modern web and mobile technologies. Dedicated to building creative, efficient solutions and turning complex ideas into scalable digital reality. Experienced in handling end-to-end development lifecycles from intuitive UI/UX frontend designs to robust backend database architectures.
+            </p>
+        </section>
+
+        <!-- Projects -->
+        <section>
+            <h2 class="text-xl font-bold text-dark border-b-2 border-brand pb-2 mb-5 inline-block">Key Projects</h2>
+
+            <div class="flex flex-col gap-5">
+                <!-- Project 1 -->
+                <div>
+                    <div class="flex justify-between items-end mb-1">
+                        <h3 class="font-bold text-dark text-base">Smart Food Administrator Web</h3>
+                        <a href="https://github.com/sahanb2005/Smart_Food_1.1" target="_blank" class="text-xs font-semibold text-brand hover:underline">sahanb2005/Smart_Food_1.1</a>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-2">
+                        Comprehensive administrative dashboard and management system developed to handle operations, database integrations, and streamlined workflow management for the Smart Food venture.
+                    </p>
+                </div>
+
+                <!-- Project 2 -->
+                <div>
+                    <div class="flex justify-between items-end mb-1">
+                        <h3 class="font-bold text-dark text-base">Real-Time Chat App</h3>
+                        <a href="https://github.com/sahanb2005/ChatApp" target="_blank" class="text-xs font-semibold text-brand hover:underline">sahanb2005/ChatApp</a>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-2">
+                        Interactive messaging platform featuring real-time communication capabilities, responsive user interface design, and seamless backend API integration.
+                    </p>
+                </div>
+
+                <!-- Project 3 -->
+                <div>
+                    <div class="flex justify-between items-end mb-1">
+                        <h3 class="font-bold text-dark text-base">Senara Menu Web</h3>
+                        <a href="https://github.com/sahanb2005/Senara-Menu.github.io" target="_blank" class="text-xs font-semibold text-brand hover:underline">sahanb2005/Senara-Menu.github.io</a>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-2">
+                        A modern, front-end digital menu interface focused on optimal user experience, responsive web design, and high-performance cross-device compatibility.
+                    </p>
+                </div>
+
+                <!-- Project 4 -->
+                <div>
+                    <div class="flex justify-between items-end mb-1">
+                        <h3 class="font-bold text-dark text-base">Zyon Vesak Festival Platform</h3>
+                        <a href="https://github.com/sahanb2005/ZyonVesak" target="_blank" class="text-xs font-semibold text-brand hover:underline">sahanb2005/ZyonVesak</a>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-2">
+                        A dedicated digital platform built for Vesak Poya day, showcasing custom animations, interactive elements, and thematic front-end structuring.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Education -->
+        <section>
+            <h2 class="text-xl font-bold text-dark border-b-2 border-brand pb-2 mb-5 inline-block">Education Roadmap</h2>
+
+            <div class="flex flex-col gap-4 relative border-l-2 border-slate-200 ml-2 pl-4">
+
+                <div class="relative">
+                    <div class="absolute -left-[23px] top-1 w-3 h-3 bg-brand rounded-full ring-4 ring-white"></div>
+                    <h3 class="font-bold text-dark text-base">Undergraduate</h3>
+                    <p class="text-sm text-brand font-medium">Birmingham City University</p>
+                    <p class="text-xs text-slate-500 mb-1">Expected 2026</p>
+                </div>
+
+                <div class="relative">
+                    <div class="absolute -left-[23px] top-1 w-3 h-3 bg-slate-300 rounded-full ring-4 ring-white"></div>
+                    <h3 class="font-bold text-dark text-base">Higher Diploma in Software Engineering</h3>
+                    <p class="text-sm text-slate-700">Java Institute for Advanced Technology</p>
+                    <p class="text-xs text-slate-500 mb-1">Completed 2025</p>
+                </div>
+
+                <div class="relative">
+                    <div class="absolute -left-[23px] top-1 w-3 h-3 bg-slate-300 rounded-full ring-4 ring-white"></div>
+                    <h3 class="font-bold text-dark text-base">Diploma in Software Engineering</h3>
+                    <p class="text-sm text-slate-700">Java Institute for Advanced Technology</p>
+                    <p class="text-xs text-slate-500 mb-1">Completed 2023</p>
+                </div>
+
+                <div class="relative">
+                    <div class="absolute -left-[23px] top-1 w-3 h-3 bg-slate-300 rounded-full ring-4 ring-white"></div>
+                    <h3 class="font-bold text-dark text-base">O/L Examinations</h3>
+                    <p class="text-sm text-slate-700">All Subjects Passed</p>
+                    <p class="text-xs text-slate-500">Completed 2021</p>
+                </div>
+
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>

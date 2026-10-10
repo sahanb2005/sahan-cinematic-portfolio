@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sahan Bandara | Full-Stack Developer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Space+Grotesk:wght@400;700&display=swap');
+
+        :root {
+            --bg-color: #0a0a0a;
+            --text-main: #ffffff;
+            --accent: #f59e0b; /* Amber */
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, .brand-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* --- SPLASH SCREEN --- */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 1s ease-out;
+        }
+
+        .typewriter-text {
+            font-size: 2rem;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 3px solid var(--accent);
+            width: 0;
+        }
+
+        .typing-cursor {
+            animation: blink 0.75s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+
+        /* --- UTILITIES --- */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+        }
+
+        .text-gradient {
+            background: linear-gradient(90deg, #fff, #a3a3a3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .accent-gradient {
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .glow-btn {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .glow-btn::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, #f59e0b, transparent, #f59e0b);
+            z-index: -1;
+            border-radius: inherit;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .glow-btn:hover::before {
+            opacity: 1;
+            animation: spin 2s linear infinite;
+        }
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        /* --- 3D CANVAS & FLOATING --- */
+        #webgl-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none; /* Let clicks pass through */
+        }
+
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(2deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        /* Avatar Image Styling */
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            /* Removed mix-blend-mode which might hide the video on dark backgrounds */
+            filter: contrast(1.1) saturate(1.2) brightness(0.9);
+            transition: all 0.5s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .floating-element:hover .avatar-img {
+            filter: none;
+            transform: scale(1.05);
+        }
+
+        /* --- ROADMAP --- */
+        .roadmap-container {
+            position: relative;
+            padding: 2rem 0;
+            overflow: hidden; /* Hide overflow for the scroll effect */
+        }
+
+        .roadmap-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 0%; /* Animates via JS */
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--accent));
+            transform: translateY(-50%);
+            z-index: 0;
+        }
+
+        .roadmap-item {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.5s ease-out;
+        }
+
+        .roadmap-item.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #vehicle {
+            position: absolute;
+            top: 50%;
+            left: -50px;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            color: var(--accent);
+            z-index: 10;
+            transition: left 0.1s linear;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+
+        /* --- PROJECT CAROUSEL --- */
+        .carousel-container {
+            overflow: hidden;
+            width: 100%;
+            position: relative;
+            border-radius: 0.75rem;
+        }
+        .carousel-track {
+            display: flex;
+            width: 300%; /* 3 images = 300% */
+            height: 100%;
+            animation: carousel-slide 9s infinite cubic-bezier(0.77, 0, 0.175, 1);
+        }
+        .carousel-track img {
+            width: 33.3333%;
+            height: 100%;
+            object-fit: cover;
+        }
+        @keyframes carousel-slide {
+            0%, 25% { transform: translateX(0); }
+            33.33%, 58.33% { transform: translateX(-33.3333%); }
+            66.66%, 91.66% { transform: translateX(-66.6666%); }
+            100% { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-amber-500 selection:text-black">
+
+<!-- Splash Screen -->
+<div id="splash-screen">
+    <div id="splash-text-container" class="font-mono text-xl md:text-3xl text-gray-400 mb-4 h-8 flex items-center">
+        <span class="text-amber-500">>_</span>&nbsp;<span id="splash-code"></span>
+    </div>
+    <div class="h-16 flex items-center justify-center">
+        <h1 id="splash-main-text" class="typewriter-text text-white brand-font text-2xl md:text-5xl"></h1>
+    </div>
+    <div id="splash-action" class="mt-8 opacity-0 transition-opacity duration-1000">
+        <button onclick="downloadCV()" class="glass-panel px-6 py-3 text-amber-500 hover:text-amber-400 hover:bg-amber-900/20 transition-all flex items-center gap-2 rounded-full border-amber-500/30">
+            <i class="fas fa-download animate-bounce"></i> Get CV
+        </button>
+    </div>
+</div>
+
+<!-- Main Content Container (Hidden initially) -->
+<main id="main-content" class="opacity-0 transition-opacity duration-1000 hidden">
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-50 glass-panel border-x-0 border-t-0 rounded-none bg-black/50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="brand-font font-bold text-xl flex items-center gap-2">
+                <span class="text-amber-500 text-2xl">SB</span>
+                <span>Sahan Bandara</span>
+            </div>
+            <div class="hidden md:flex gap-8 text-sm font-medium text-gray-300">
+                <a href="#home" class="hover:text-amber-500 transition-colors">Home</a>
+                <a href="#about" class="hover:text-amber-500 transition-colors">About</a>
+                <a href="#projects" class="hover:text-amber-500 transition-colors">Projects</a>
+                <a href="#roadmap" class="hover:text-amber-500 transition-colors">Journey</a>
+                <a href="#skills" class="hover:text-amber-500 transition-colors">Skills</a>
+            </div>
+            <div>
+                <button onclick="downloadCV()" class="glass-panel px-4 py-2 text-sm text-white hover:bg-white/10 transition-all rounded-full flex items-center gap-2">
+                    Get CV <i class="fas fa-arrow-down"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 3D Background Container -->
+    <div id="webgl-container"></div>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative min-h-screen flex items-center pt-20 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 w-full grid md:grid-cols-2 gap-12 relative z-10">
+            <div class="flex flex-col justify-center space-y-6">
+                <p class="text-amber-500 tracking-widest text-sm uppercase">Hello,</p>
+                <h1 class="text-5xl md:text-7xl font-bold leading-tight">
+                    Plan your tech<br>
+                    future with <span class="accent-gradient italic">Sahan</span>
+                </h1>
+                <p class="text-gray-400 text-lg max-w-md">
+                    I'm a Full-Stack Developer & Tech Enthusiast, turning ideas into digital reality.
+                </p>
+                <div class="pt-4">
+                    <button onclick="downloadCV()" class="glow-btn glass-panel border-amber-500 text-amber-500 px-8 py-3 rounded-full font-medium hover:bg-amber-500 hover:text-black transition-colors flex items-center gap-2 w-max">
+                        Get My CV <i class="fas fa-download"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Central Image/3D Area representation -->
+            <div class="relative h-[60vh] md:h-auto flex items-center justify-center">
+                <!-- Placeholder for the user's face related 3D object concept -->
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-500/20 via-transparent to-transparent opacity-50 blur-2xl"></div>
+
+                <div class="floating-element relative z-10 w-64 h-64 md:w-96 md:h-96 rounded-full glass-panel flex items-center justify-center overflow-hidden border-amber-500/50 border-4 shadow-[0_0_30px_rgba(245,158,11,0.3)] bg-black">
+                    <!-- Robust video tag with explicit ./ path and standard autoplay attributes -->
+                    <video
+                            src="./gemini_generated_video_848343d2_2.mp4"
+                            class="avatar-img"
+                            autoplay
+                            loop
+                            muted
+                            playsinline
+                            poster="./sahan-portrait.jpg">
+                    </video>
+                    <!-- Overlay gradient for depth -->
+                    <div class="absolute inset-0 bg-gradient-to-tr from-amber-900/40 to-transparent pointer-events-none z-10"></div>
+                </div>
+
+                <!-- Floating decorative elements -->
+                <div class="absolute top-10 right-10 glass-panel p-4 rounded-xl floating-element" style="animation-delay: -2s;">
+                    <i class="fas fa-code text-2xl text-amber-500"></i>
+                </div>
+                <div class="absolute bottom-20 left-10 glass-panel p-4 rounded-xl floating-element" style="animation-delay: -4s;">
+                    <i class="fas fa-database text-2xl text-blue-400"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute bottom-10 w-full text-center text-gray-500 text-sm animate-pulse flex flex-col items-center">
+            <i class="fas fa-arrow-down mb-2 text-amber-500 border border-amber-500/30 rounded-full p-2"></i>
+            Scroll to explore
+        </div>
+    </section>
+
+    <!-- About Section (The "Eye Zoom" concept area) -->
+    <section id="about" class="py-24 relative z-10 bg-black/80 backdrop-blur-sm border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-sm text-gray-500 mb-2 font-mono">01. ABOUT ME</div>
+
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="text-4xl md:text-5xl font-bold mb-6 min-h-[96px] md:min-h-[120px]">
+                        <span id="about-type-1"></span><br>
+                        <span class="text-gradient" id="about-type-2"></span> <span class="accent-gradient" id="about-type-3"></span><span id="about-cursor" class="typing-cursor opacity-0">_</span>
+                    </h2>
+                    <p class="text-gray-400 leading-relaxed mb-8">
+                        I'm a passionate Full-Stack Developer with a strong foundation in modern web and mobile technologies. I love building creative solutions, learning new things and turning ideas into real products.
+                    </p>
+
+                    <div class="grid grid-cols-3 gap-4 border-t border-white/10 pt-8">
+                        <div>
+                            <div class="text-3xl font-bold text-white">4+</div>
+                            <div class="text-xs text-gray-500 mt-1">Years Journey</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-bold text-white">10+</div>
+                            <div class="text-xs text-gray-500 mt-1">Projects</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-bold text-white">100%</div>
+                            <div class="text-xs text-gray-500 mt-1">Dedication</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative flex justify-center items-center h-full">
+                    <!-- Video replacing the quote block -->
+                    <div class="glass-panel p-2 rounded-2xl relative w-full max-w-sm floating-element shadow-[0_0_30px_rgba(245,158,11,0.2)]">
+                        <video src="./gemini_generated_video_29c52ec1.mp4" class="w-full h-auto rounded-xl object-cover" autoplay loop muted playsinline poster="./sahan-portrait.jpg"></video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-24 relative z-10 border-t border-white/5 bg-gradient-to-b from-black/80 to-transparent">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-sm text-gray-500 mb-2 font-mono">02. MY WORK</div>
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Featured <span class="accent-gradient">Projects</span></h2>
+            <p class="text-gray-400 mb-12">A selection of my recent development work.</p>
+
+            <div class="grid md:grid-cols-2 gap-8">
+
+                <!-- Project 1: Chat App -->
+                <div class="glass-panel p-6 flex flex-col group relative overflow-hidden transition-all hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(245,158,11,0.15)] border-white/10 hover:border-amber-500/50">
+                    <div class="absolute -top-4 -right-2 p-4 text-8xl font-bold text-white/5 font-mono z-0 pointer-events-none transition-transform group-hover:scale-110">01</div>
+
+                    <div class="h-48 md:h-56 mb-6 z-10 overflow-hidden rounded-xl border border-white/10 bg-black relative">
+                        <video src="project-chat-app.mp4" autoplay loop muted playsinline class="w-full h-full object-contain opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"></video>
+                    </div>
+
+                    <h3 class="text-2xl font-bold mb-2 z-10 group-hover:text-amber-500 transition-colors">Real-Time Chat App</h3>
+                    <p class="text-gray-400 text-sm mb-6 flex-grow z-10">A dynamic real-time communication platform allowing instant messaging between users. Built with a focus on speed and reliability.</p>
+
+                    <a href="https://github.com/sahanb2005/ChatApp" target="_blank" rel="noopener noreferrer" class="glow-btn glass-panel border-amber-500/30 text-amber-500 px-6 py-2 rounded-full text-center text-sm font-medium hover:bg-amber-500 hover:text-black transition-all z-10 w-max flex items-center gap-2">
+                        <i class="fab fa-github text-lg"></i> View Repository
+                    </a>
+                </div>
+
+                <!-- Project 2: Senara Menu Web -->
+                <div class="glass-panel p-6 flex flex-col group relative overflow-hidden transition-all hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(245,158,11,0.15)] border-white/10 hover:border-amber-500/50">
+                    <div class="absolute -top-4 -right-2 p-4 text-8xl font-bold text-white/5 font-mono z-0 pointer-events-none transition-transform group-hover:scale-110">02</div>
+
+                    <div class="h-48 md:h-56 mb-6 z-10 overflow-hidden rounded-xl border border-white/10 bg-black/50 relative">
+                        <video src="project-senara-menu.mp4" autoplay loop muted playsinline class="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"></video>
+                    </div>
+
+                    <h3 class="text-2xl font-bold mb-2 z-10 group-hover:text-amber-500 transition-colors">Senara Menu Web</h3>
+                    <p class="text-gray-400 text-sm mb-6 flex-grow z-10">A digital restaurant menu interface designed for easy navigation and an appetizing visual presentation of food items.</p>
+
+                    <a href="https://github.com/sahanb2005/Senara-Menu.github.io" target="_blank" rel="noopener noreferrer" class="glow-btn glass-panel border-amber-500/30 text-amber-500 px-6 py-2 rounded-full text-center text-sm font-medium hover:bg-amber-500 hover:text-black transition-all z-10 w-max flex items-center gap-2">
+                        <i class="fab fa-github text-lg"></i> View Repository
+                    </a>
+                </div>
+
+                <!-- Project 3: Vesak Festival -->
+                <div class="glass-panel p-6 flex flex-col group relative overflow-hidden transition-all hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(245,158,11,0.15)] border-white/10 hover:border-amber-500/50">
+                    <div class="absolute -top-4 -right-2 p-4 text-8xl font-bold text-white/5 font-mono z-0 pointer-events-none transition-transform group-hover:scale-110">03</div>
+
+                    <div class="h-48 md:h-56 mb-6 z-10 overflow-hidden rounded-xl border border-white/10 bg-black/50 relative">
+                        <video src="project-vesak-fest.mp4" autoplay loop muted playsinline class="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"></video>
+                    </div>
+
+                    <h3 class="text-2xl font-bold mb-2 z-10 group-hover:text-amber-500 transition-colors">Zyon Vesak Festival</h3>
+                    <p class="text-gray-400 text-sm mb-6 flex-grow z-10">A dedicated web project celebrating Vesak Poya day, showcasing cultural significance through engaging digital interactions.</p>
+
+                    <a href="https://github.com/sahanb2005/ZyonVesak" target="_blank" rel="noopener noreferrer" class="glow-btn glass-panel border-amber-500/30 text-amber-500 px-6 py-2 rounded-full text-center text-sm font-medium hover:bg-amber-500 hover:text-black transition-all z-10 w-max flex items-center gap-2">
+                        <i class="fab fa-github text-lg"></i> View Repository
+                    </a>
+                </div>
+
+                <!-- Project 4: Smart Food Admin -->
+                <div class="glass-panel p-6 flex flex-col group relative overflow-hidden transition-all hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(245,158,11,0.15)] border-white/10 hover:border-amber-500/50">
+                    <div class="absolute -top-4 -right-2 p-4 text-8xl font-bold text-white/5 font-mono z-0 pointer-events-none transition-transform group-hover:scale-110">04</div>
+
+                    <div class="h-48 md:h-56 mb-6 z-10 overflow-hidden rounded-xl border border-white/10 bg-black/50 relative">
+                        <video src="project-smart-food.mp4" autoplay loop muted playsinline class="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"></video>
+                    </div>
+
+                    <h3 class="text-2xl font-bold mb-2 z-10 group-hover:text-amber-500 transition-colors">Smart Food Admin Panel</h3>
+                    <p class="text-gray-400 text-sm mb-6 flex-grow z-10">A comprehensive administrator web dashboard for managing food orders, inventory, and analytics for a smart food delivery service.</p>
+
+                    <a href="https://github.com/sahanb2005/Smart_Food_1.1" target="_blank" rel="noopener noreferrer" class="glow-btn glass-panel border-amber-500/30 text-amber-500 px-6 py-2 rounded-full text-center text-sm font-medium hover:bg-amber-500 hover:text-black transition-all z-10 w-max flex items-center gap-2">
+                        <i class="fab fa-github text-lg"></i> View Repository
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Roadmap Section -->
+    <section id="roadmap" class="py-24 relative z-10 border-t border-white/5 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-sm text-gray-500 mb-2 font-mono">03. MY JOURNEY</div>
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Education <span class="accent-gradient">Roadmap</span></h2>
+            <p class="text-gray-400 mb-16">From a dream to a degree — step by step.</p>
+
+            <!-- Container for Road -->
+            <div class="roadmap-container pb-12 relative" id="roadmap-scroll-area">
+                <!-- The Animated Line -->
+                <div class="roadmap-line" id="roadmap-progress"></div>
+
+                <!-- The Vehicle -->
+                <div id="vehicle">
+                    <i class="fas fa-car-side"></i>
+                </div>
+
+                <!-- Items container now flexes to allow horizontal scrolling/translation via JS -->
+                <div class="flex min-w-max gap-8 px-12 relative z-10 transition-transform duration-300 ease-out" id="roadmap-items-container">
+
+                    <!-- Item 1 -->
+                    <div class="roadmap-item glass-panel p-6 w-72 flex flex-col justify-center border-t-4 border-t-amber-500 relative">
+                        <div class="absolute -top-3 right-4 bg-black rounded-full p-1 border border-white/10">
+                            <i class="fas fa-check-circle text-green-500"></i>
+                        </div>
+                        <div class="flex items-center gap-4 mb-4">
+                            <i class="fas fa-book-open text-3xl text-gray-400"></i>
+                            <div>
+                                <div class="text-xl font-bold text-amber-500">2021</div>
+                                <div class="font-semibold text-white">O/L EXAMS</div>
+                            </div>
+                        </div>
+                        <div class="text-sm text-gray-400">All Subjects Passed</div>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="roadmap-item glass-panel p-6 w-72 flex flex-col justify-center border-t-4 border-t-amber-500 relative">
+                        <div class="absolute -top-3 right-4 bg-black rounded-full p-1 border border-white/10">
+                            <i class="fas fa-check-circle text-green-500"></i>
+                        </div>
+                        <div class="flex items-center gap-4 mb-4">
+                            <i class="fas fa-graduation-cap text-3xl text-gray-400"></i>
+                            <div>
+                                <div class="text-xl font-bold text-amber-500">2022</div>
+                                <div class="font-semibold text-white">Enter to University</div>
+                            </div>
+                        </div>
+                        <div class="text-sm text-gray-400">Java Institute</div>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div class="roadmap-item glass-panel p-6 w-72 flex flex-col justify-center border-t-4 border-t-amber-500 relative">
+                        <div class="absolute -top-3 right-4 bg-black rounded-full p-1 border border-white/10">
+                            <i class="fas fa-check-circle text-green-500"></i>
+                        </div>
+                        <div class="flex items-center gap-4 mb-4">
+                            <i class="fas fa-certificate text-3xl text-gray-400"></i>
+                            <div>
+                                <div class="text-xl font-bold text-amber-500">2023</div>
+                                <div class="font-semibold text-white">Diploma</div>
+                            </div>
+                        </div>
+                        <div class="text-sm text-gray-400">Software Engineering<br>Java Institute</div>
+                    </div>
+
+                    <!-- Item 4 -->
+                    <div class="roadmap-item glass-panel p-6 w-72 flex flex-col justify-center border-t-4 border-t-amber-500 relative">
+                        <div class="absolute -top-3 right-4 bg-black rounded-full p-1 border border-white/10">
+                            <i class="fas fa-check-circle text-green-500"></i>
+                        </div>
+                        <div class="flex items-center gap-4 mb-4">
+                            <i class="fas fa-award text-3xl text-gray-400"></i>
+                            <div>
+                                <div class="text-xl font-bold text-amber-500">2025</div>
+                                <div class="font-semibold text-white">Higher Diploma</div>
+                            </div>
+                        </div>
+                        <div class="text-sm text-gray-400">Software Engineering<br>Java Institute</div>
+                    </div>
+
+                    <!-- Item 5 -->
+                    <div class="roadmap-item glass-panel p-6 w-72 flex flex-col justify-center border-t-4 border-t-white relative shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+                        <div class="absolute -top-3 right-4 bg-black rounded-full p-1 border border-white/10">
+                            <i class="fas fa-spinner fa-spin text-amber-500"></i>
+                        </div>
+                        <div class="flex items-center gap-4 mb-4">
+                            <i class="fas fa-university text-3xl text-amber-500"></i>
+                            <div>
+                                <div class="text-xl font-bold text-amber-500">2026</div>
+                                <div class="font-semibold text-white">Undergraduate</div>
+                            </div>
+                        </div>
+                        <div class="text-sm text-gray-400">Birmingham City University</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills / Where I can help -->
+    <section id="skills" class="py-24 relative z-10 border-t border-white/5 bg-gradient-to-b from-transparent to-black/90">
+        <div class="max-w-7xl mx-auto px-6">
+
+            <!-- Skills Header -->
+            <div class="text-sm text-gray-500 mb-2 font-mono">04. SKILLS & TECHNOLOGIES</div>
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Technologies I <span class="accent-gradient">Work With</span></h2>
+            <p class="text-gray-400 mb-12">Modern tools. Clean code. Real solutions.</p>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-24">
+                <!-- Frontend -->
+                <div class="glass-panel p-6">
+                    <h3 class="font-bold mb-4 border-b border-white/10 pb-2">Frontend</h3>
+                    <ul class="space-y-3 text-sm text-gray-300">
+                        <li class="flex items-center gap-2"><i class="fab fa-react text-blue-400"></i> React / Next.js</li>
+                        <li class="flex items-center gap-2"><i class="fab fa-html5 text-orange-500"></i> HTML5 / CSS3</li>
+                        <li class="flex items-center gap-2"><i class="fab fa-js text-yellow-400"></i> JavaScript / TS</li>
+                        <li class="flex items-center gap-2"><i class="fab fa-bootstrap text-purple-500"></i> Bootstrap</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-wind text-cyan-400"></i> Tailwind CSS</li>
+                    </ul>
+                </div>
+
+                <!-- Backend -->
+                <div class="glass-panel p-6">
+                    <h3 class="font-bold mb-4 border-b border-white/10 pb-2">Backend</h3>
+                    <ul class="space-y-3 text-sm text-gray-300">
+                        <li class="flex items-center gap-2"><i class="fab fa-node-js text-green-500"></i> Node.js / Express</li>
+                        <li class="flex items-center gap-2"><i class="fab fa-java text-red-500"></i> Java / Spring Boot</li>
+                        <li class="flex items-center gap-2"><i class="fab fa-php text-indigo-400"></i> PHP</li>
+                        <li class="flex items-center gap-2"><i class="fab fa-python text-blue-300"></i> Python</li>
+                    </ul>
+                </div>
+
+                <!-- Database -->
+                <div class="glass-panel p-6">
+                    <h3 class="font-bold mb-4 border-b border-white/10 pb-2">Database</h3>
+                    <ul class="space-y-3 text-sm text-gray-300">
+                        <li class="flex items-center gap-2"><i class="fas fa-database text-blue-500"></i> MySQL</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-elephant text-blue-300"></i> PostgreSQL</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-leaf text-green-500"></i> MongoDB</li>
+                    </ul>
+                </div>
+
+                <!-- Tools -->
+                <div class="glass-panel p-6">
+                    <h3 class="font-bold mb-4 border-b border-white/10 pb-2">Tools & Others</h3>
+                    <ul class="space-y-3 text-sm text-gray-300">
+                        <li class="flex items-center gap-2"><i class="fab fa-git-alt text-orange-600"></i> Git</li>
+                        <li class="flex items-center gap-2"><i class="fab fa-docker text-blue-500"></i> Docker</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-code text-blue-400"></i> VS Code</li>
+                        <li class="flex items-center gap-2"><i class="fab fa-figma text-pink-400"></i> Figma</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Where I can help -->
+            <div class="text-sm text-gray-500 mb-2 font-mono mt-24">05. WHERE I CAN HELP</div>
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">What I Can <span class="accent-gradient">Help With</span></h2>
+            <p class="text-gray-400 mb-8">I can help you with modern web & mobile development, API integration, database design and more.</p>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="glass-panel p-6 flex items-start gap-4 hover:bg-white/5 transition-colors cursor-default">
+                    <div class="bg-amber-500/10 p-3 rounded-lg text-amber-500">
+                        <i class="fas fa-laptop-code text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-lg mb-2">Web Development</h4>
+                        <p class="text-sm text-gray-400">Responsive Websites, Full-Stack Applications, REST APIs.</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-6 flex items-start gap-4 hover:bg-white/5 transition-colors cursor-default">
+                    <div class="bg-blue-500/10 p-3 rounded-lg text-blue-400">
+                        <i class="fas fa-mobile-alt text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-lg mb-2">Mobile Development</h4>
+                        <p class="text-sm text-gray-400">Android Apps, React Native, Flutter concepts.</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-6 flex items-start gap-4 hover:bg-white/5 transition-colors cursor-default">
+                    <div class="bg-green-500/10 p-3 rounded-lg text-green-400">
+                        <i class="fas fa-server text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-lg mb-2">Database & Backend</h4>
+                        <p class="text-sm text-gray-400">MySQL / PostgreSQL, MongoDB, Server Deployment.</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-6 flex items-start gap-4 hover:bg-white/5 transition-colors cursor-default">
+                    <div class="bg-purple-500/10 p-3 rounded-lg text-purple-400">
+                        <i class="fas fa-paint-brush text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-lg mb-2">UI/UX & Design</h4>
+                        <p class="text-sm text-gray-400">Modern UI/UX, Bootstrap / Tailwind, basic 3D concepts.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="mt-16 glass-panel p-12 text-center rounded-2xl border-amber-500/20 relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-r from-amber-900/20 to-transparent z-0"></div>
+                <div class="relative z-10">
+                    <h2 class="text-3xl font-bold mb-4">Let's Build Something Great Together</h2>
+                    <p class="text-gray-400 mb-8">Feel free to reach out for collaborations or just a friendly hello.</p>
+
+                    <div class="flex flex-col md:flex-row items-center justify-center gap-6 mb-8 text-lg">
+                        <a href="mailto:sahanb942@gmail.com" class="flex items-center gap-3 text-gray-300 hover:text-amber-500 transition-colors">
+                            <i class="fas fa-envelope text-amber-500"></i> sahanb942@gmail.com
+                        </a>
+                        <div class="hidden md:block text-gray-600">|</div>
+                        <a href="tel:+94762202028" class="flex items-center gap-3 text-gray-300 hover:text-amber-500 transition-colors">
+                            <i class="fas fa-phone text-amber-500"></i> 0762202028
+                        </a>
+                    </div>
+
+                    <button onclick="contactAction()" class="glow-btn glass-panel bg-white text-black font-bold px-8 py-3 rounded-full hover:bg-gray-200 transition-colors mt-4">
+                        Drop a Message <i class="fas fa-paper-plane ml-2"></i>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="border-t border-white/10 py-8 text-center text-gray-500 text-sm glass-panel rounded-none">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-2 font-bold text-white">
+                <span class="text-amber-500">SB</span> Sahan Bandara
+            </div>
+            <div class="italic">
+                "A Small steps every day lead to big results."
+            </div>
+            <div class="flex gap-4">
+                <a href="https://www.linkedin.com/in/sahan-bandara-20b339344" target="_blank" rel="noopener noreferrer" class="hover:text-amber-500 transition-colors"><i class="fab fa-linkedin text-xl"></i></a>
+                <a href="https://github.com/sahanb2005" target="_blank" rel="noopener noreferrer" class="hover:text-amber-500 transition-colors"><i class="fab fa-github text-xl"></i></a>
+                <a href="tel:+94762202028" class="hover:text-amber-500 transition-colors"><i class="fas fa-phone text-xl"></i></a>
+                <a href="mailto:sahanb942@gmail.com" class="hover:text-amber-500 transition-colors"><i class="fas fa-envelope text-xl"></i></a>
+            </div>
+        </div>
+        <div class="mt-8 text-xs text-gray-600">
+            &copy; 2026 Sahan Bandara. All rights reserved.
+        </div>
+    </footer>
+
+</main>
+
+<script>
+    // --- Dummy Functions ---
+    function downloadCV() {
+        // Navigate directly to the interactive CV HTML page
+        window.location.href = 'Sahan_Bandara_CV.html';
+    }
+
+    function contactAction() {
+        window.location.href = "mailto:sahanb942@gmail.com";
+    }
+
+    // --- Splash Screen & Typing Logic ---
+    document.addEventListener("DOMContentLoaded", () => {
+        gsap.registerPlugin(ScrollTrigger);
+
+        const codeStr = "init Portfolio();";
+        const mainTextStr = "Hello, Plan your tech future with Sahan";
+
+        const codeEl = document.getElementById('splash-code');
+        const mainTextEl = document.getElementById('splash-main-text');
+        const actionBtn = document.getElementById('splash-action');
+        const splashScreen = document.getElementById('splash-screen');
+        const mainContent = document.getElementById('main-content');
+
+        let codeIndex = 0;
+
+        function typeCode() {
+            if (codeIndex < codeStr.length) {
+                codeEl.textContent += codeStr.charAt(codeIndex);
+                codeIndex++;
+                setTimeout(typeCode, 50);
+            } else {
+                setTimeout(typeMainText, 500);
+            }
+        }
+
+        function typeMainText() {
+            mainTextEl.classList.add('typing-cursor');
+            mainTextEl.textContent = "";
+
+            // CSS approach for typing
+            mainTextEl.style.width = '0';
+            mainTextEl.style.transition = 'width 2s steps(40, end)';
+            mainTextEl.textContent = mainTextStr;
+
+            // Force reflow
+            void mainTextEl.offsetWidth;
+
+            // Start animation
+            mainTextEl.style.width = '100%';
+
+            setTimeout(() => {
+                actionBtn.classList.remove('opacity-0');
+                actionBtn.classList.add('opacity-100');
+
+                // Transition to main site after a brief pause
+                setTimeout(() => {
+                    splashScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        splashScreen.style.display = 'none';
+                        mainContent.classList.remove('hidden');
+                        // Force reflow
+                        void mainContent.offsetWidth;
+                        mainContent.classList.remove('opacity-0');
+                        mainContent.classList.add('opacity-100');
+
+                        init3DBackground();
+                        initScrollAnimations();
+                    }, 1000);
+                }, 2500); // Time to show the download CV button on splash
+            }, 2000);
+        }
+
+        // Start sequence
+        setTimeout(typeCode, 500);
+    });
+
+    // --- 3D Background (Three.js) ---
+    let scene, camera, renderer, particles;
+    let mouseX = 0;
+    let mouseY = 0;
+
+    function init3DBackground() {
+        const container = document.getElementById('webgl-container');
+
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+
+        // Create particles (representing tech/nodes)
+        const geometry = new THREE.BufferGeometry();
+        const particlesCount = 700;
+        const posArray = new Float32Array(particlesCount * 3);
+
+        for(let i = 0; i < particlesCount * 3; i++) {
+            // Spread particles
+            posArray[i] = (Math.random() - 0.5) * 10;
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+        const material = new THREE.PointsMaterial({
+            size: 0.015,
+            color: 0xf59e0b, // Amber color
+            transparent: true,
+            opacity: 0.8,
+            blending: THREE.AdditiveBlending
+        });
+
+        particles = new THREE.Points(geometry, material);
+        scene.add(particles);
+
+        camera.position.z = 3;
+
+        // Mouse interaction
+        document.addEventListener('mousemove', (event) => {
+            mouseX = event.clientX / window.innerWidth - 0.5;
+            mouseY = event.clientY / window.innerHeight - 0.5;
+        });
+
+        // Handle resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate3D();
+    }
+
+    function animate3D() {
+        requestAnimationFrame(animate3D);
+
+        if(particles) {
+            particles.rotation.y += 0.001;
+            particles.rotation.x += 0.0005;
+
+            // Subtle mouse movement effect
+            particles.rotation.y += mouseX * 0.01;
+            particles.rotation.x += mouseY * 0.01;
+        }
+
+        renderer.render(scene, camera);
+    }
+
+    // --- Scroll Animations (GSAP) ---
+    function initScrollAnimations() {
+        // Roadmap animation based on WINDOW scroll
+        const roadmapSection = document.getElementById('roadmap');
+        const itemsContainer = document.getElementById('roadmap-items-container');
+        const items = document.querySelectorAll('.roadmap-item');
+        const vehicle = document.getElementById('vehicle');
+        const progressLine = document.getElementById('roadmap-progress');
+
+        // Calculate total width of items to know how far to translate
+        // w-72 = 18rem = 288px. Plus gap-8 = 2rem = 32px.
+        const itemWidth = 288 + 32;
+        const totalWidth = items.length * itemWidth;
+
+        // Use GSAP ScrollTrigger to pin the section and move the items horizontally
+        gsap.to(itemsContainer, {
+            x: () => -(totalWidth - window.innerWidth + 100), // Move left by total width minus viewport
+            ease: "none",
+            scrollTrigger: {
+                trigger: roadmapSection,
+                start: "top top",     // Pin when section reaches top of viewport
+                end: () => "+=" + totalWidth, // Keep pinned for the duration of the horizontal scroll length
+                pin: true,
+                scrub: 1,             // Smooth scrubbing
+                onUpdate: (self) => {
+                    const progress = self.progress; // 0 to 1
+
+                    // Update line width
+                    progressLine.style.width = `${progress * 100}%`;
+
+                    // Move vehicle along the line
+                    // Container width represents the visible part, so we move it across screen
+                    const maxVehicleTravel = window.innerWidth - 100; // Leave some margin
+                    vehicle.style.left = `${progress * maxVehicleTravel}px`;
+
+                    // Active states for items based on progress
+                    items.forEach((item, index) => {
+                        // Rough calculation for when item should activate based on total progress
+                        const activationPoint = index / items.length;
+                        if (progress > activationPoint - 0.1) {
+                            item.classList.add('active');
+                        } else {
+                            item.classList.remove('active');
+                        }
+                    });
+
+                    // Final vehicle state
+                    if (progress > 0.95) {
+                        vehicle.innerHTML = '<i class="fas fa-car-side fa-flip-horizontal"></i>';
+                        vehicle.style.transform = 'translateY(-50%) scale(1.5)';
+                        vehicle.style.color = '#fff';
+                    } else {
+                        vehicle.innerHTML = '<i class="fas fa-car-side"></i>';
+                        vehicle.style.transform = 'translateY(-50%) scale(1)';
+                        vehicle.style.color = 'var(--accent)';
+                    }
+                }
+            }
+        });
+
+        // Fade in sections on scroll down page (exclude roadmap as it's handled above)
+        gsap.utils.toArray('section:not(#roadmap)').forEach(section => {
+            gsap.from(section, {
+                opacity: 0,
+                y: 50,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: section,
+                    start: "top 80%", // When top of section hits 80% of viewport
+                    toggleActions: "play none none reverse"
+                }
+            });
+        });
+
+        const type1 = document.getElementById('about-type-1');
+        const type2 = document.getElementById('about-type-2');
+        const type3 = document.getElementById('about-type-3');
+        const aboutCursor = document.getElementById('about-cursor');
+
+        const str1 = "Hi, I'm";
+        const str2 = "Sahan";
+        const str3 = "Bandara";
+
+        let i1 = 0, i2 = 0, i3 = 0;
+
+        function typeAbout() {
+            aboutCursor.classList.remove('opacity-0');
+            if (i1 < str1.length) {
+                type1.textContent += str1.charAt(i1);
+                i1++;
+                setTimeout(typeAbout, 100);
+            } else if (i1 === str1.length && i2 === 0) {
+                i1++; // Prevent re-trigger
+                setTimeout(typeAbout, 300); // Pause before next line
+            } else if (i2 < str2.length) {
+                type2.textContent += str2.charAt(i2);
+                i2++;
+                setTimeout(typeAbout, 100);
+            } else if (i2 === str2.length && i3 === 0) {
+                i2++; // Prevent re-trigger
+                type3.innerHTML = "&nbsp;"; // Add space before last word
+                setTimeout(typeAbout, 100);
+            } else if (i3 < str3.length) {
+                type3.textContent += str3.charAt(i3);
+                i3++;
+                setTimeout(typeAbout, 100);
+            }
+        }
+
+        // Trigger typing effect when "About" section comes into view
+        ScrollTrigger.create({
+            trigger: "#about",
+            start: "top 75%",
+            onEnter: () => {
+                if(i1 === 0) typeAbout();
+            },
+            once: true
+        });
+    }
+</script>
+</body>
+</html>
