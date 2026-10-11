@@ -47,15 +47,6 @@
             transition: opacity 1s ease-out;
         }
 
-        .typewriter-text {
-            font-size: 2rem;
-            font-weight: 700;
-            white-space: nowrap;
-            overflow: hidden;
-            border-right: 3px solid var(--accent);
-            width: 0;
-        }
-
         .typing-cursor {
             animation: blink 0.75s step-end infinite;
         }
@@ -229,21 +220,23 @@
 <body class="antialiased selection:bg-amber-500 selection:text-black">
 
 <!-- Splash Screen -->
-<div id="splash-screen">
-    <div id="splash-text-container" class="font-mono text-xl md:text-3xl text-gray-400 mb-4 h-8 flex items-center">
+<div id="splash-screen" class="px-6 text-center">
+    <div id="splash-text-container" class="font-mono text-xl md:text-3xl text-gray-400 mb-4 flex items-center justify-center min-h-[2rem]">
         <span class="text-amber-500">>_</span>&nbsp;<span id="splash-code"></span>
     </div>
-    <div class="h-16 flex items-center justify-center">
-        <h1 id="splash-main-text" class="typewriter-text text-white brand-font text-2xl md:text-5xl"></h1>
+    <div class="min-h-[4rem] flex items-center justify-center max-w-4xl mx-auto">
+        <h1 class="text-white brand-font text-3xl md:text-5xl font-bold leading-snug">
+            <span id="splash-main-text"></span><span id="splash-main-cursor" class="hidden border-r-[3px] border-amber-500 ml-1 opacity-0"></span>
+        </h1>
     </div>
-    <div id="splash-action" class="mt-8 opacity-0 transition-opacity duration-1000">
+    <div id="splash-action" class="mt-8 opacity-0 transition-opacity duration-1000 flex justify-center">
         <button onclick="downloadCV()" class="glass-panel px-6 py-3 text-amber-500 hover:text-amber-400 hover:bg-amber-900/20 transition-all flex items-center gap-2 rounded-full border-amber-500/30">
             <i class="fas fa-download animate-bounce"></i> Get CV
         </button>
     </div>
 </div>
 
-<!-- Main Content Container (Hidden initially) -->
+<!-- Main Content Container -->
 <main id="main-content" class="opacity-0 transition-opacity duration-1000 hidden">
 
     <!-- Navbar -->
@@ -304,7 +297,7 @@
                             loop
                             muted
                             playsinline
-                            >
+                            poster="./sahan-portrait.jpg">
                     </video>
                     <!-- Overlay gradient for depth -->
                     <div class="absolute inset-0 bg-gradient-to-tr from-amber-900/40 to-transparent pointer-events-none z-10"></div>
@@ -360,7 +353,7 @@
                 <div class="relative flex justify-center items-center h-full">
                     <!-- Video replacing the quote block -->
                     <div class="glass-panel p-2 rounded-2xl relative w-full max-w-sm floating-element shadow-[0_0_30px_rgba(245,158,11,0.2)]">
-                        <video src="./gemini_generated_video_38df07ba_1.mp4" class="w-full h-auto rounded-xl object-cover" autoplay loop muted playsinline poster="./gemini_generated_video_29c52ec1.mp4"></video>
+                        <video src="./gemini_generated_video_38df07ba_1.mp4" class="w-full h-auto rounded-xl object-cover" autoplay loop muted playsinline poster="./sahan-portrait.jpg"></video>
                     </div>
                 </div>
             </div>
@@ -694,9 +687,7 @@
 </main>
 
 <script>
-    // --- Dummy Functions ---
     function downloadCV() {
-        // Navigate directly to the interactive CV HTML page
         window.location.href = 'Sahan_Bandara_CV.html';
     }
 
@@ -704,7 +695,6 @@
         window.location.href = "mailto:sahanb942@gmail.com";
     }
 
-    // --- Splash Screen & Typing Logic ---
     document.addEventListener("DOMContentLoaded", () => {
         gsap.registerPlugin(ScrollTrigger);
 
@@ -712,7 +702,6 @@
         const mainTextStr = "Hello, Plan your tech future with Sahan";
 
         const codeEl = document.getElementById('splash-code');
-        const mainTextEl = document.getElementById('splash-main-text');
         const actionBtn = document.getElementById('splash-action');
         const splashScreen = document.getElementById('splash-screen');
         const mainContent = document.getElementById('main-content');
@@ -730,47 +719,51 @@
         }
 
         function typeMainText() {
-            mainTextEl.classList.add('typing-cursor');
+            const mainTextEl = document.getElementById('splash-main-text');
+            const mainCursor = document.getElementById('splash-main-cursor');
+
+            // Show and animate cursor
+            mainCursor.classList.remove('hidden', 'opacity-0');
+            mainCursor.classList.add('typing-cursor');
             mainTextEl.textContent = "";
 
-            // CSS approach for typing
-            mainTextEl.style.width = '0';
-            mainTextEl.style.transition = 'width 2s steps(40, end)';
-            mainTextEl.textContent = mainTextStr;
+            let charIndex = 0;
 
-            // Force reflow
-            void mainTextEl.offsetWidth;
-
-            // Start animation
-            mainTextEl.style.width = '100%';
-
-            setTimeout(() => {
-                actionBtn.classList.remove('opacity-0');
-                actionBtn.classList.add('opacity-100');
-
-                // Transition to main site after a brief pause
-                setTimeout(() => {
-                    splashScreen.style.opacity = '0';
+            // Real JS typing function to allow text to wrap on mobile
+            function typeChar() {
+                if (charIndex < mainTextStr.length) {
+                    mainTextEl.textContent += mainTextStr.charAt(charIndex);
+                    charIndex++;
+                    setTimeout(typeChar, 40); // speed of typing
+                } else {
+                    // Finished typing
                     setTimeout(() => {
-                        splashScreen.style.display = 'none';
-                        mainContent.classList.remove('hidden');
-                        // Force reflow
-                        void mainContent.offsetWidth;
-                        mainContent.classList.remove('opacity-0');
-                        mainContent.classList.add('opacity-100');
+                        actionBtn.classList.remove('opacity-0');
+                        actionBtn.classList.add('opacity-100');
 
-                        init3DBackground();
-                        initScrollAnimations();
-                    }, 1000);
-                }, 2500); // Time to show the download CV button on splash
-            }, 2000);
+                        setTimeout(() => {
+                            splashScreen.style.opacity = '0';
+                            setTimeout(() => {
+                                splashScreen.style.display = 'none';
+                                mainContent.classList.remove('hidden');
+                                void mainContent.offsetWidth; // Force reflow
+                                mainContent.classList.remove('opacity-0');
+                                mainContent.classList.add('opacity-100');
+
+                                init3DBackground();
+                                initScrollAnimations();
+                            }, 1000);
+                        }, 2500);
+                    }, 500);
+                }
+            }
+
+            typeChar();
         }
 
-        // Start sequence
         setTimeout(typeCode, 500);
     });
 
-    // --- 3D Background (Three.js) ---
     let scene, camera, renderer, particles;
     let mouseX = 0;
     let mouseY = 0;
