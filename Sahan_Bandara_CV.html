@@ -23,30 +23,77 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
 
-        /* Force strict A4 printing rules */
+        /* A4 print layout: allow the CV to continue onto additional pages */
         @page {
             size: A4;
-            margin: 0;
+            margin: 10mm;
         }
+
         @media print {
-            body {
-                background-color: white;
-                margin: 0;
-                padding: 0;
-            }
-            .a4-document {
+            html, body {
+                width: auto !important;
+                min-height: 0 !important;
                 margin: 0 !important;
-                box-shadow: none !important;
-                width: 210mm !important;
-                height: 297mm !important; /* Lock to exactly 1 A4 page height */
-                overflow: hidden !important; /* Prevent spilling to page 2 */
-                display: flex !important;
-                flex-direction: row !important; /* Force side-by-side layout in print */
+                padding: 0 !important;
+                background: #ffffff !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
-            /* Lock column widths specifically for print */
-            .print-sidebar { width: 33.333333% !important; height: 100vh !important; }
-            .print-main { width: 66.666667% !important; height: 100vh !important; }
-            .no-print { display: none !important; }
+
+            .a4-document {
+                box-sizing: border-box !important;
+                width: 190mm !important;
+                max-width: none !important;
+                min-height: 0 !important;
+                height: auto !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: visible !important;
+                box-shadow: none !important;
+                display: grid !important;
+                grid-template-columns: 33.333333% 66.666667% !important;
+                align-items: start !important;
+            }
+
+            .print-sidebar,
+            .print-main {
+                box-sizing: border-box !important;
+                width: auto !important;
+                min-width: 0 !important;
+                height: auto !important;
+                min-height: 0 !important;
+                overflow: visible !important;
+            }
+
+            .print-sidebar {
+                padding: 7mm !important;
+            }
+
+            .print-main {
+                padding: 7mm !important;
+            }
+
+            /* Keep individual CV sections together where possible */
+            .print-main section,
+            .print-sidebar > div {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+
+            .print-main section > div,
+            .print-main section > div > div {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+
+            a {
+                color: inherit !important;
+                text-decoration: none !important;
+            }
+
+            .no-print {
+                display: none !important;
+            }
         }
     </style>
     <script>
