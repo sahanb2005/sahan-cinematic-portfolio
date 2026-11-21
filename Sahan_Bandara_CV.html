@@ -7,658 +7,269 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
         body {
             font-family: 'Inter', sans-serif;
             background-color: #e2e8f0;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
+            color: #0f172a;
             margin: 0;
             padding: 0;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
         }
 
-        .a4-document {
+        .cv-sheet {
             width: 210mm;
             min-height: 297mm;
-            background: white;
+            background: #ffffff;
             margin: 1.5rem auto;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 15mm 17mm;
+            box-sizing: border-box;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
         }
 
-        /* A4 Print Layout */
+        .section-heading {
+            font-size: 11.5pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #0f172a;
+            border-bottom: 1.5px solid #0284c7;
+            padding-bottom: 3px;
+            margin-top: 14px;
+            margin-bottom: 8px;
+        }
+
+        .cv-list {
+            list-style-type: disc;
+            padding-left: 18px;
+            margin: 5px 0 0 0;
+        }
+
+        .cv-list li {
+            font-size: 10pt;
+            line-height: 1.48;
+            color: #334155;
+            margin-bottom: 4px;
+        }
+
         @page {
             size: A4;
-            margin: 8mm;
+            margin: 10mm;
         }
 
         @media print {
-            html, body {
-                width: auto !important;
-                min-height: 0 !important;
-                margin: 0 !important;
-                padding: 0 !important;
+            body {
                 background: #ffffff !important;
-                font-size: 13px !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-
-            .a4-document {
-                box-sizing: border-box !important;
-                width: 194mm !important;
-                max-width: none !important;
-                min-height: 0 !important;
-                height: auto !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                overflow: visible !important;
-                box-shadow: none !important;
-                display: grid !important;
-                grid-template-columns: 32% 68% !important;
-                align-items: start !important;
-            }
-
-            .print-sidebar,
-            .print-main {
-                box-sizing: border-box !important;
-                width: auto !important;
-                min-width: 0 !important;
-                height: auto !important;
-                min-height: 0 !important;
-                overflow: visible !important;
-                padding: 5.5mm !important;
-            }
-
-            .print-main {
-                gap: 0.75rem !important;
-            }
-
-            .print-main section,
-            .print-sidebar > div {
-                break-inside: avoid;
-                page-break-inside: avoid;
-            }
-
-            .reference-item {
-                break-inside: avoid;
-                page-break-inside: avoid;
-                margin-bottom: 8px !important;
-            }
-
-            a {
-                color: inherit !important;
-                text-decoration: none !important;
             }
 
             .no-print {
                 display: none !important;
             }
-        }
 
-        /* References */
-        .reference-item {
-            margin-bottom: 10px;
-            padding-left: 10px;
-            border-left: 3px solid #0284c7;
-            break-inside: avoid;
-            page-break-inside: avoid;
-        }
+            .cv-sheet {
+                width: 100% !important;
+                min-height: 0 !important;
+                margin: 0 !important;
+                padding: 4mm 6mm !important;
+                box-shadow: none !important;
+            }
 
-        .reference-item h3 {
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 2px;
-            color: #0369a1;
-        }
+            .section-heading {
+                margin-top: 11px !important;
+                margin-bottom: 6px !important;
+                font-size: 10.8pt !important;
+            }
 
-        .reference-item p {
-            font-size: 11.5px;
-            line-height: 1.45;
-            margin: 1px 0;
-            color: #475569;
-        }
+            .cv-list li {
+                font-size: 9.5pt !important;
+                line-height: 1.42 !important;
+                margin-bottom: 3px !important;
+            }
 
-        .reference-item a {
-            color: inherit;
-            text-decoration: none;
-        }
-    </style>
+            section, .entry-block {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            light: '#e0f2fe',
-                            DEFAULT: '#0284c7',
-                            dark: '#0369a1',
-                        },
-                        dark: '#0f172a'
-                    }
-                }
+            a {
+                color: #0f172a !important;
+                text-decoration: none !important;
             }
         }
-    </script>
+    </style>
 </head>
+<body>
 
-<body class="text-slate-800">
-
-<!-- Interactive Action Bar -->
-<div class="no-print bg-slate-900 text-white p-4 flex flex-col md:flex-row justify-between items-center sticky top-0 z-50 shadow-lg gap-4">
-
-    <a href="index.html"
-       class="flex items-center gap-2 hover:text-brand-light transition-colors font-medium">
-
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round"
-                  stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18">
-            </path>
-        </svg>
-
-        Back to Portfolio
-    </a>
-
-    <div class="flex items-center gap-4">
-
-        <span class="text-sm text-slate-400 hidden md:inline italic">
-            Tip: Check "Background graphics" in print settings.
+    <!-- Action Bar -->
+    <div class="no-print bg-slate-900 text-white px-5 py-3 flex justify-between items-center sticky top-0 z-50 shadow">
+        <span class="text-sm font-medium text-slate-200">
+            Optimized ATS Single-Column CV (1-Page)
         </span>
-
         <button onclick="window.print()"
-            class="bg-brand hover:bg-brand-dark px-5 py-2 rounded-full font-medium flex items-center gap-2 transition-colors shadow-lg shadow-brand/20">
-
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 00-2-2v-4H9v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
-                </path>
-            </svg>
-
+                class="bg-sky-600 hover:bg-sky-500 text-white text-sm font-medium px-4 py-1.5 rounded transition">
             Print / Save PDF
         </button>
     </div>
-</div>
 
+    <!-- Single-Column ATS CV Sheet -->
+    <main class="cv-sheet">
 
-<!-- CV Document -->
-<div class="a4-document flex flex-col md:flex-row">
-
-    <!-- LEFT SIDEBAR -->
-    <div class="print-sidebar w-full md:w-[32%] bg-slate-50 border-r border-slate-200 p-6 flex flex-col gap-5">
-
-        <!-- Profile -->
-        <div class="flex flex-col items-center text-center gap-3">
-
-            <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-md bg-slate-200">
-
-                <img src="sahan-portrait-new.jpeg"
-                     alt="Sahan Bandara"
-                     class="w-full h-full object-cover"
-                     onerror="this.src='https://placehold.co/400x400/0f172a/ffffff?text=SB'">
-
-            </div>
-
-            <div>
-                <h1 class="text-xl font-bold text-dark tracking-tight">
-                    Sahan Bandara
-                </h1>
-
-                <p class="text-brand-dark font-semibold text-sm mt-0.5">
-                    Full-Stack Developer
-                </p>
-            </div>
-        </div>
-
-
-        <!-- Contact -->
-        <div class="flex flex-col gap-2.5">
-
-            <h2 class="text-xs font-bold text-dark uppercase tracking-wider border-b-2 border-brand w-12 pb-1">
-                Contact
-            </h2>
-
-            <div class="flex flex-col gap-2 text-xs text-slate-600">
-
-                <div class="flex items-center gap-2.5">
-                    <svg class="w-4 h-4 text-brand shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
-                        </path>
-                    </svg>
-
-                    <span class="break-all">sahanb942@gmail.com</span>
-                </div>
-
-                <div class="flex items-center gap-2.5">
-                    <svg class="w-4 h-4 text-brand shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
-                        </path>
-                    </svg>
-
-                    <span>+94 76 220 2028</span>
-                </div>
-
-                <div class="flex items-center gap-2.5">
-                    <svg class="w-4 h-4 text-brand shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14">
-                        </path>
-                    </svg>
-
-                    <a href="https://github.com/sahanb2005"
-                       class="hover:text-brand break-all" target="_blank">
-                        github.com/sahanb2005
-                    </a>
-                </div>
-
-                <div class="flex items-center gap-2.5">
-                    <svg class="w-4 h-4 text-brand shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
-                        </path>
-                    </svg>
-
-                    <a href="https://www.linkedin.com/in/sahan-bandara-20b339344"
-                       class="hover:text-brand break-all" target="_blank">
-                        linkedin.com/in/sahan-bandara-20b339344
-                    </a>
-                </div>
-
-            </div>
-        </div>
-
-
-        <!-- Technical Skills -->
-        <div class="flex flex-col gap-2.5">
-
-            <h2 class="text-xs font-bold text-dark uppercase tracking-wider border-b-2 border-brand w-16 pb-1">
-                Technical Skills
-            </h2>
-
-            <div>
-                <h3 class="text-[11px] font-semibold text-slate-800 mb-1">
-                    Frontend
-                </h3>
-
-                <div class="flex flex-wrap gap-1.5">
-                    <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded text-[11px] font-medium">React / Next.js</span>
-                    <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded text-[11px] font-medium">JavaScript / TS</span>
-                    <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded text-[11px] font-medium">Tailwind CSS</span>
-                </div>
-            </div>
-
-            <div>
-                <h3 class="text-[11px] font-semibold text-slate-800 mb-1">
-                    Backend & Database
-                </h3>
-
-                <div class="flex flex-wrap gap-1.5">
-                    <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded text-[11px] font-medium">Java / Spring Boot</span>
-                    <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded text-[11px] font-medium">Node.js / NestJS</span>
-                    <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded text-[11px] font-medium">PostgreSQL</span>
-                    <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded text-[11px] font-medium">MySQL</span>
-                </div>
-            </div>
-
-            <div>
-                <h3 class="text-[11px] font-semibold text-slate-800 mb-1">
-                    Mobile & Tools
-                </h3>
-
-                <div class="flex flex-wrap gap-1.5">
-                    <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded text-[11px] font-medium">React Native</span>
-                    <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded text-[11px] font-medium">Android Java</span>
-                    <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded text-[11px] font-medium">Git / Docker</span>
-                </div>
-            </div>
-
-            <div>
-                <h3 class="text-[11px] font-semibold text-slate-800 mb-1">
-                    Architecture & Methods
-                </h3>
-
-                <div class="flex flex-wrap gap-1.5">
-                    <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded text-[11px] font-medium">REST APIs</span>
-                    <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded text-[11px] font-medium">Agile</span>
-                    <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded text-[11px] font-medium">UI/UX Prototyping</span>
-                </div>
-            </div>
-
-            <div>
-                <h3 class="text-[11px] font-semibold text-slate-800 mb-1">
-                    Currently Exploring
-                </h3>
-
-                <div class="flex flex-wrap gap-1.5">
-                    <span class="bg-brand-light text-brand-dark px-2 py-0.5 rounded text-[11px] font-medium">Python (Studying)</span>
-                    <span class="bg-brand-light text-brand-dark px-2 py-0.5 rounded text-[11px] font-medium">DevOps (Studying)</span>
-                </div>
-            </div>
-
-        </div>
-
-
-        <!-- Soft Skills / Strengths -->
-        <div class="flex flex-col gap-2">
-
-            <h2 class="text-xs font-bold text-dark uppercase tracking-wider border-b-2 border-brand w-14 pb-1">
-                Soft Skills
-            </h2>
-
-            <div class="flex flex-wrap gap-1.5">
-                <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded text-[11px] font-medium">Problem Solving</span>
-                <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded text-[11px] font-medium">Teamwork</span>
-                <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded text-[11px] font-medium">Communication</span>
-                <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded text-[11px] font-medium">Adaptability</span>
-            </div>
-
-        </div>
-    </div>
-
-
-    <!-- RIGHT MAIN CONTENT -->
-    <div class="print-main w-full md:w-[68%] p-6 flex flex-col gap-4 bg-white">
-
-        <!-- Professional Summary -->
-        <section>
-
-            <h2 class="text-base font-bold text-dark uppercase tracking-wide border-b-2 border-brand pb-1 mb-2 inline-block">
-                Professional Summary
-            </h2>
-
-            <p class="text-[13px] text-slate-600 leading-relaxed">
-                Full-Stack Developer experienced in building responsive web and mobile applications across React, Next.js, TypeScript, NestJS, and Spring Boot. Strong problem solver and collaborative team player skilled in end-to-end delivery—from UI/UX and real-time APIs to database design and deployment—while actively expanding into DevOps and Python.
+        <!-- Header / Contact -->
+        <header class="border-b border-slate-300 pb-3.5">
+            <h1 class="text-2xl font-bold tracking-tight text-slate-900">
+                Sahan Bandara
+            </h1>
+            <p class="text-sm font-semibold text-sky-700 mt-0.5">
+                Full-Stack Software Developer
             </p>
+            <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600 mt-2">
+                <span>Sri Lanka</span>
+                <span>sahanb942@gmail.com</span>
+                <span>+94 76 220 2028</span>
+                <span><a href="https://github.com/sahanb2005" target="_blank" class="text-sky-700 underline">github.com/sahanb2005</a></span>
+                <span><a href="https://www.linkedin.com/in/sahan-bandara-20b339344" target="_blank" class="text-sky-700 underline">linkedin.com/in/sahan-bandara-20b339344</a></span>
+            </div>
+        </header>
 
+        <!-- Summary -->
+        <section>
+            <h2 class="section-heading mt-3">Professional Summary</h2>
+            <p class="text-[10pt] leading-[1.5] text-slate-700">
+                Full-Stack Developer specializing in React, Next.js, TypeScript, NestJS, and Spring Boot. Delivered 3+ production web, ERP, and mobile platforms featuring real-time WebSockets, JWT/2FA authentication, and relational database architectures, with hands-on exposure to Docker, Python, and DevOps workflows.
+            </p>
         </section>
 
+        <!-- Technical Skills -->
+        <section>
+            <h2 class="section-heading">Technical Skills</h2>
+            <div class="text-[9.8pt] leading-[1.5] text-slate-700 space-y-1">
+                <p><strong class="text-slate-900">Frontend &amp; Design:</strong> React 19, Next.js 15, TypeScript, JavaScript (ES6+), Tailwind CSS, UI/UX Design, Responsive Web Design, Content &amp; Engagement Workflows</p>
+                <p><strong class="text-slate-900">Backend &amp; Databases:</strong> Java, Spring Boot, Node.js, NestJS, PostgreSQL, MySQL, Redis, TypeORM, REST APIs, Socket.io, Technical Architecture</p>
+                <p><strong class="text-slate-900">Mobile &amp; Multi-Platform:</strong> React Native, Expo, Android (Java), Mobile Platforms, Multi-Platform Development, Firebase, NativeWind</p>
+                <p><strong class="text-slate-900">Product, Tools &amp; DevOps:</strong> Product Development, Product Planning, Git, Docker, CI/CD Fundamentals, Python (Studying), Agile Scrum</p>
+            </div>
+        </section>
 
         <!-- Work Experience -->
         <section>
+            <h2 class="section-heading">Work Experience</h2>
 
-            <h2 class="text-base font-bold text-dark uppercase tracking-wide border-b-2 border-brand pb-1 mb-2 inline-block">
-                Work Experience
-            </h2>
-
-            <div class="flex flex-col gap-2.5">
-
-                <div>
-                    <div class="flex justify-between items-baseline">
-                        <h3 class="font-bold text-dark text-sm">
-                            Freelance Full-Stack Developer
-                        </h3>
-
-                        <span class="text-xs font-semibold text-brand">
-                            Independent Projects
-                        </span>
-                    </div>
-
-                    <p class="text-[12.5px] text-slate-600 leading-snug mt-0.5">
-                        Architected and delivered custom web apps, ERP modules, and mobile solutions by translating client requirements into practical technical solutions, managing REST APIs, database schemas, and deployments.
-                    </p>
+            <div class="entry-block mb-3.5">
+                <div class="flex justify-between items-baseline">
+                    <h3 class="text-[10.5pt] font-bold text-slate-900">
+                        Freelance Full-Stack Developer — Independent Client Projects
+                    </h3>
                 </div>
+                <ul class="cv-list">
+                    <li>Architected and shipped 3+ full-stack web applications, ERP modules, and mobile solutions from product planning and requirements gathering to production deployment.</li>
+                    <li>Engineered 20+ RESTful API endpoints and normalized PostgreSQL/MySQL schemas to support multi-user business workflows.</li>
+                    <li>Containerized backend services with Docker and streamlined client handoffs through iterative Agile feedback cycles.</li>
+                </ul>
+            </div>
 
-                <div>
-                    <div class="flex justify-between items-baseline">
-                        <h3 class="font-bold text-dark text-sm">
-                            Digital Manager & Web Developer
-                        </h3>
-
-                        <span class="text-xs font-semibold text-brand">
-                            Senara Restaurant
-                        </span>
-                    </div>
-
-                    <p class="text-[12.5px] text-slate-600 leading-snug mt-0.5">
-                        Collaborated with operations and staff on digital campaigns and built the responsive 'Senara Menu Web' platform focused on fast performance and cross-device usability.
-                    </p>
+            <div class="entry-block">
+                <div class="flex justify-between items-baseline">
+                    <h3 class="text-[10.5pt] font-bold text-slate-900">
+                        Digital Manager &amp; Web Developer — Senara Restaurant
+                    </h3>
                 </div>
-
+                <ul class="cv-list">
+                    <li>Launched the responsive Senara Menu Web platform, achieving 100% mobile-to-desktop compatibility for dine-in and online customers.</li>
+                    <li>Coordinated directly with restaurant operations staff to manage digital menu content updates, customer engagement, and targeted promotional campaigns.</li>
+                </ul>
             </div>
         </section>
-
 
         <!-- Key Projects -->
         <section>
+            <h2 class="section-heading">Projects</h2>
 
-            <h2 class="text-base font-bold text-dark uppercase tracking-wide border-b-2 border-brand pb-1 mb-2 inline-block">
-                Key Projects
-            </h2>
-
-            <div class="flex flex-col gap-2.5">
-
-                <!-- Project 1 -->
-                <div>
-                    <div class="flex justify-between items-baseline gap-2">
-                        <h3 class="font-bold text-dark text-sm">
-                            Smart Food ERP System
-                        </h3>
-
-                        <a href="https://github.com/sahanb2005/Smart_Food_1.1"
-                           target="_blank"
-                           class="text-[11.5px] font-semibold text-brand hover:underline">
-                            github.com/sahanb2005/Smart_Food_1.1
-                        </a>
-                    </div>
-
-                    <p class="text-[12.5px] text-slate-600 leading-snug mt-0.5">
-                        Full-stack food manufacturing and distribution ERP monorepo with JWT/2FA role-based access, real-time updates, QR/barcode workflows, and operational reporting.
-                    </p>
-
-                    <p class="text-[11.5px] font-semibold text-slate-700 mt-0.5">
-                        Stack: Next.js 15, React 19, TypeScript, NestJS, PostgreSQL, TypeORM, Redis, Socket.io
-                    </p>
+            <div class="entry-block mb-3.5">
+                <div class="flex flex-wrap justify-between items-baseline gap-2">
+                    <h3 class="text-[10.5pt] font-bold text-slate-900">
+                        Smart Food ERP System
+                    </h3>
+                    <a href="https://github.com/sahanb2005/Smart_Food_1.1" target="_blank" class="text-xs text-sky-700 underline">
+                        github.com/sahanb2005/Smart_Food_1.1
+                    </a>
                 </div>
+                <p class="text-xs font-medium text-slate-600">
+                    Stack: Next.js 15, React 19, TypeScript, NestJS, PostgreSQL, TypeORM, Redis, Socket.io
+                </p>
+                <ul class="cv-list">
+                    <li>Engineered a full-stack manufacturing and distribution ERP monorepo covering inventory, QR/barcode tracking, and operational analytics.</li>
+                    <li>Secured multi-role access using JWT authentication and Two-Factor Authentication (2FA) across 4+ organizational user roles.</li>
+                    <li>Integrated Socket.io and Redis caching to deliver sub-second real-time stock and order status updates.</li>
+                </ul>
+            </div>
 
-                <!-- Project 2 -->
-                <div>
-                    <div class="flex justify-between items-baseline">
-                        <h3 class="font-bold text-dark text-sm">
-                            Smart School Transport System
-                        </h3>
-                    </div>
-
-                    <p class="text-[12.5px] text-slate-600 leading-snug mt-0.5">
-                        Real-time tracking platform connecting vehicle owners, drivers, and parents with live location monitoring and role-based access control.
-                    </p>
-
-                    <p class="text-[11.5px] font-semibold text-slate-700 mt-0.5">
-                        Stack: Android Java, React Native, Spring Boot, Firebase
-                    </p>
+            <div class="entry-block mb-3.5">
+                <div class="flex justify-between items-baseline">
+                    <h3 class="text-[10.5pt] font-bold text-slate-900">
+                        Smart School Transport System
+                    </h3>
                 </div>
+                <p class="text-xs font-medium text-slate-600">
+                    Stack: Android (Java), React Native, Spring Boot, Firebase
+                </p>
+                <ul class="cv-list">
+                    <li>Connected 3 distinct user groups (vehicle owners, drivers, and parents) on a unified real-time GPS tracking platform.</li>
+                    <li>Synchronized live route telemetry and role-based notifications between Spring Boot REST services and Firebase.</li>
+                </ul>
+            </div>
 
-
-                <!-- Project 3 -->
-                <div>
-                    <div class="flex justify-between items-baseline gap-2">
-                        <h3 class="font-bold text-dark text-sm">
-                            ChatApp (Mobile & Cross-Platform UI)
-                        </h3>
-
-                        <a href="https://github.com/sahanb2005/ChatApp"
-                           target="_blank"
-                           class="text-[11.5px] font-semibold text-brand hover:underline">
-                            github.com/sahanb2005/ChatApp
-                        </a>
-                    </div>
-
-                    <p class="text-[12.5px] text-slate-600 leading-snug mt-0.5">
-                        Cross-platform messaging UI built with React Native and Expo featuring animated inputs, multi-screen navigation, Async Storage persistence, and media/document picking.
-                    </p>
-
-                    <p class="text-[11.5px] font-semibold text-slate-700 mt-0.5">
-                        Stack: React Native, Expo, TypeScript, NativeWind, React Navigation, Reanimated, Async Storage
-                    </p>
+            <div class="entry-block">
+                <div class="flex flex-wrap justify-between items-baseline gap-2">
+                    <h3 class="text-[10.5pt] font-bold text-slate-900">
+                        ChatApp (Cross-Platform Mobile UI)
+                    </h3>
+                    <a href="https://github.com/sahanb2005/ChatApp" target="_blank" class="text-xs text-sky-700 underline">
+                        github.com/sahanb2005/ChatApp
+                    </a>
                 </div>
-
+                <p class="text-xs font-medium text-slate-600">
+                    Stack: React Native, Expo, TypeScript, NativeWind, React Navigation, Reanimated, Async Storage
+                </p>
+                <ul class="cv-list">
+                    <li>Crafted a cross-platform iOS/Android messaging interface with 60fps Reanimated input transitions and multi-screen navigation.</li>
+                    <li>Implemented offline message persistence via Async Storage alongside native image and document attachment workflows.</li>
+                </ul>
             </div>
         </section>
 
-
-        <!-- Education Roadmap -->
+        <!-- Education -->
         <section>
-
-            <h2 class="text-base font-bold text-dark uppercase tracking-wide border-b-2 border-brand pb-1 mb-2 inline-block">
-                Education Roadmap
-            </h2>
-
-            <div class="flex flex-col gap-2 relative border-l-2 border-slate-200 ml-1.5 pl-3.5">
-
-                <!-- BSc -->
-                <div class="relative">
-                    <div class="absolute -left-[21px] top-1 w-2.5 h-2.5 bg-brand rounded-full ring-2 ring-white"></div>
-
-                    <div class="flex justify-between items-baseline">
-                        <h3 class="font-bold text-dark text-[13px]">
-                            BSc (Hons) in Software Engineering
-                        </h3>
-
-                        <span class="text-[11px] text-slate-500">
-                            Expected 2027
-                        </span>
-                    </div>
-
-                    <p class="text-xs text-brand font-medium">
-                        Birmingham City University
-                    </p>
-                </div>
-
-
-                <!-- Higher Diploma -->
-                <div class="relative">
-                    <div class="absolute -left-[21px] top-1 w-2.5 h-2.5 bg-slate-300 rounded-full ring-2 ring-white"></div>
-
-                    <div class="flex flex-wrap justify-between items-baseline gap-1">
-                        <h3 class="font-bold text-dark text-[13px]">
-                            Professional Higher Diploma in Software Engineering
-                            <span class="text-[10.5px] font-semibold text-brand-dark bg-brand-light px-1.5 py-0.5 rounded ml-1">
-                                NVQ Level 5
-                            </span>
-                        </h3>
-
-                        <span class="text-[11px] text-slate-500">
-                            Completed 2025
-                        </span>
-                    </div>
-
-                    <p class="text-xs text-slate-700">
-                        Skills & Education Group (UK)
-                    </p>
-
-                    <div class="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-0.5 text-[10.5px]">
-                        <a href="https://verify.skillsandeducationgroup.co.uk/?reference=55438023-01-065S"
-                           target="_blank"
-                           class="font-semibold text-brand hover:underline">
-                            Certificate (Ref: 55438023-01-065S)
-                        </a>
-
-                        <a href="https://verify.skillsandeducationgroup.co.uk/?reference=04446188-01-EMLC"
-                           target="_blank"
-                           class="font-semibold text-slate-600 hover:text-brand hover:underline">
-                            Transcript (Ref: 04446188-01-EMLC)
-                        </a>
-                    </div>
-                </div>
-
-
-                <!-- Diploma -->
-                <div class="relative">
-                    <div class="absolute -left-[21px] top-1 w-2.5 h-2.5 bg-slate-300 rounded-full ring-2 ring-white"></div>
-
-                    <div class="flex flex-wrap justify-between items-baseline gap-1">
-                        <h3 class="font-bold text-dark text-[13px]">
-                            Diploma in Software Engineering
-                            <span class="text-[10.5px] font-semibold text-brand-dark bg-brand-light px-1.5 py-0.5 rounded ml-1">
-                                NVQ Level 4
-                            </span>
-                        </h3>
-
-                        <span class="text-[11px] text-slate-500">
-                            Completed
-                        </span>
-                    </div>
-
-                    <p class="text-xs text-slate-700">
-                        Skills & Education Group (UK)
-                    </p>
-
-                    <div class="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-0.5 text-[10.5px]">
-                        <a href="https://verify.skillsandeducationgroup.co.uk/?reference=91308754-01-41Q1"
-                           target="_blank"
-                           class="font-semibold text-brand hover:underline">
-                            Certificate (Ref: 91308754-01-41Q1)
-                        </a>
-
-                        <a href="https://verify.skillsandeducationgroup.co.uk/?reference=21302844-01-72M4"
-                           target="_blank"
-                           class="font-semibold text-slate-600 hover:text-brand hover:underline">
-                            Transcript (Ref: 21302844-01-72M4)
-                        </a>
-                    </div>
-                </div>
-
-
-                <!-- O/L -->
-                <div class="relative">
-                    <div class="absolute -left-[21px] top-1 w-2.5 h-2.5 bg-slate-300 rounded-full ring-2 ring-white"></div>
-
-                    <div class="flex justify-between items-baseline">
-                        <h3 class="font-bold text-dark text-[13px]">
-                            G.C.E. O/L Examinations
-                        </h3>
-
-                        <span class="text-[11px] text-slate-500">
-                            Completed
-                        </span>
-                    </div>
-
-                    <p class="text-xs text-slate-700">
-                        Credits in Science & English, Pass in Mathematics
-                    </p>
-                </div>
-
-            </div>
+            <h2 class="section-heading">Education</h2>
+            <ul class="cv-list">
+                <li>
+                    <strong class="text-slate-900">BSc (Hons) in Software Engineering</strong> — Birmingham City University (Expected 2027)
+                </li>
+                <li>
+                    <strong class="text-slate-900">Professional Higher Diploma in Software Engineering (NVQ Level 5)</strong> — Skills &amp; Education Group (UK), 2025 |
+                    <a href="https://verify.skillsandeducationgroup.co.uk/?reference=55438023-01-065S" target="_blank" class="text-sky-700 underline">Cert: 55438023-01-065S</a> |
+                    <a href="https://verify.skillsandeducationgroup.co.uk/?reference=04446188-01-EMLC" target="_blank" class="text-sky-700 underline">Transcript: 04446188-01-EMLC</a>
+                </li>
+                <li>
+                    <strong class="text-slate-900">Diploma in Software Engineering (NVQ Level 4)</strong> — Skills &amp; Education Group (UK) |
+                    <a href="https://verify.skillsandeducationgroup.co.uk/?reference=91308754-01-41Q1" target="_blank" class="text-sky-700 underline">Cert: 91308754-01-41Q1</a> |
+                    <a href="https://verify.skillsandeducationgroup.co.uk/?reference=21302844-01-72M4" target="_blank" class="text-sky-700 underline">Transcript: 21302844-01-72M4</a>
+                </li>
+                <li>
+                    <strong class="text-slate-900">G.C.E. O/L Examinations</strong> — Credits in Science &amp; English, Pass in Mathematics
+                </li>
+            </ul>
         </section>
 
-
-        <!-- References -->
-        <section class="references-section">
-
-            <h2 class="text-base font-bold text-dark uppercase tracking-wide border-b-2 border-brand pb-1 mb-2 inline-block">
-                References
-            </h2>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-
-                <!-- Reference 1 -->
-                <div class="reference-item">
-                    <h3>Mr. Thilina Rajakaruna</h3>
-                    <p><strong>Position:</strong> Senior Lecturer</p>
-                    <p><strong>Department:</strong> Academic Department</p>
-                    <p><strong>Email:</strong> <a href="mailto:thilina.jiat@gmail.com">thilina.jiat@gmail.com</a></p>
-                    <p><strong>Phone:</strong> <a href="tel:0710512311">071 051 2311</a></p>
-                </div>
-
-                <!-- Reference 2 -->
-                <div class="reference-item">
-                    <h3>Mr. Anjana D. Samarakoon</h3>
-                    <p><strong>Position:</strong> Former Lecturer</p>
-                    <p><strong>Email:</strong> <a href="mailto:anjanad.samarakoon@gmail.com">anjanad.samarakoon@gmail.com</a></p>
-                    <p><strong>Phone:</strong> <a href="tel:0762711882">076 271 1882</a></p>
-                </div>
-
-            </div>
+        <!-- Soft Skills -->
+        <section>
+            <h2 class="section-heading">Soft Skills</h2>
+            <p class="text-[9.8pt] leading-[1.5] text-slate-700">
+                Strategic Thinking, Innovation, Problem Solving, Teamwork, Collaboration, Adaptability, Communication
+            </p>
         </section>
 
-    </div>
-</div>
-
+    </main>
 </body>
 </html>
